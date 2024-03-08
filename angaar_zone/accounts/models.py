@@ -1,4 +1,4 @@
-from typing import Any
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -46,6 +46,8 @@ class Students(User):
         verbose_name = 'Student'
         
 
+
+#=========================================================================================================================================================================================================================
 
 class Teacher(User):
     phone_number=models.CharField(blank=False,null=False)
