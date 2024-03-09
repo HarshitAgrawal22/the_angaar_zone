@@ -1,37 +1,26 @@
 from django.db import models
-from accounts.models import *
+from accounts.models import Students,Teacher,Course
 from django.utils import timezone
 from django.contrib.auth.models import User 
 # Create your models here.
 
 
-class Course(models.Model):
-
-    name=models.CharField(blank=False,null=False,max_length=30)
-
-    description=models.TextField(blank=False,null=False)
-
-    def __str__(self) -> str:
-        return self.name
-    class Meta:
-        verbose_name = 'Course'
-        verbose_name_plural = 'Courses'
-        
-    
-    
 
 #=========================================================================================================================================================================================================================
     
 class Session(models.Model):
     
-    course=models.ForeignKey(Course,null=True,blank=True)
+    course=models.ForeignKey(Course,null=True,blank=True,on_delete=models.CASCADE)
     
-    teacher=models.ForeignKey(Teacher,related_name="sessions",blank=False,null=False)
+    teacher=models.ForeignKey(Teacher,related_name="sessions",blank=False,null=False,
+                              on_delete=models.PROTECT
+                              
+                              )
     
     title=models.CharField(null=False,blank=False,max_length=40)
     
     
-    time=models.DateTimeField(auto_add_now=True)
+    time=models.DateTimeField(auto_now_add=True)
     
     link=models.URLField()
     start_time=models.DateTimeField()
@@ -80,24 +69,27 @@ class Session(models.Model):
 class Chat(models.Model):
     text=models.TextField()
     
-    sender=models.ForeignKey(User,blank=False,null=False)
+    sender=models.ForeignKey(User,blank=False,null=False,related_name="chats",
+    on_delete=models.CASCADE)
     
-    receiver=models.ForeignKey(User,null=False,blank=False)
+    receiver=models.ForeignKey(User,null=False,blank=False,related_name="chat",
+    on_delete=models.CASCADE)
     
-    time=models=models.DateTimeField(auto_add_now=True)
+    creation_time=models.DateTimeField(auto_now_add=True)
     
 
 #=========================================================================================================================================================================================================================
 class Assignment(models.Model):
     
     course=models.ForeignKey(Course,related_name="assignment",
-                             blank=False,null=False)
+                             blank=False,null=False,max_length=30,
+                             on_delete=models.CASCADE)
     
-    created_at=models.DateField(auto_add_now=True)
+    created_at=models.DateField(auto_now_add=True)
     
     is_Submitted=models.BooleanField(default=False)
     
-    title=models.CharField()
+    title=models.CharField(max_length=30)
     
     due_date=models.DateField()
     
@@ -123,7 +115,7 @@ class Submission(models.Model):
     
     file=models.FileField(blank=True,null=True)
     
-    submitted_at= models.DateTimeField(auto_add_now=True)
+    submitted_at= models.DateTimeField(auto_now_add=True)
     
     
     def __str__(self) -> str:
