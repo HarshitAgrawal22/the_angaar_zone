@@ -32,7 +32,8 @@ class Students(User):
     course=models.ManyToManyField(Course ,blank=False,related_name="students")
     
     bio = models.TextField()
-    isStudent=models.BooleanField(blank=False,null=False)
+    isStudent=models.BooleanField(blank=False,null=False,default=True)
+    isTeacher= models.BooleanField(default=False,blank=False ,null=False)
     
     profile_pic=ProcessedImageField(upload_to="students_profile",processors=[ResizeToFit(width=500,height=600)],format="JPEG",
                                     options={"quality":90})
@@ -70,6 +71,9 @@ class Teacher(User):
                                     processors=[ResizeToFit(width=500,height=600)],
                                     format="JPEG",options={"quality":90}
                                     )
+    isTeacher= models.BooleanField(default=True,blank=False ,null=False)
+    
+    isStudent=models.BooleanField(blank=False,null=False,default=False)
     course=models.ForeignKey(Course,related_name="teachers",blank=False,null=False,on_delete=models.DO_NOTHING
                              
                              )
