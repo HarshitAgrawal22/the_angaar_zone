@@ -18,7 +18,8 @@ class Course(models.Model):
         verbose_name = 'Course'
         verbose_name_plural = 'Courses'
         
-    
+ #=========================================================================================================================================================================================================================
+   
     
 # Create your models here.
 
@@ -27,7 +28,7 @@ class Students(User):
     address =models.TextField()
     parent_phone_number=models.CharField(max_length=10,null=True,blank=True)
     gender=models.CharField(choices=(
-        ("female","female"),("male","male"),("Prefer not to say","Preer not to say")
+        ("female","female"),("male","male"),("Prefer not to say","Prefer not to say")
     ),max_length=30)
     course=models.ManyToManyField(Course ,blank=False,related_name="students")
     

@@ -42,6 +42,8 @@ class StudentRegistrationView(APIView):
             # we have to create the isvalid method in the student registration serializer
             user=serializer.save()
             # here the user will be created 
+            # new student is created and stored to the database
+            
         
         
         
