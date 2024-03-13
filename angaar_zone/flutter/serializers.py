@@ -26,8 +26,21 @@ class StudentRegistrationSerializers(serializers.ModelSerializer):
     
     
     def create(self,validated_data):
-        student=Students.objects.create(username=validated_data.get("username"))
+        
+        # the purpose of this method is to validate the data before registering the new Student
+        student=Students.objects.create(username=validated_data.get
+                                        ("username"))
         # TODO we need to add email field while registration
         student.set_password(validated_data.get("password"))
         student.save()
         return student
+    
+
+class StudentLoginSerializer(serializers.ModelSerializer):
+    username=serializers.CharField()
+    password=serializers.CharField(style={
+        "input_type":"password"
+    })
+    class Meta:
+        model=Students
+        fields=["username","password"]
