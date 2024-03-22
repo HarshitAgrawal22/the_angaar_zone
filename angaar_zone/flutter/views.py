@@ -1,5 +1,5 @@
 from django.test import TestCase
-
+from icecream import ic
 # Create your tests here.
 from rest_framework import serializers,status
 from rest_framework.response import Response
@@ -7,7 +7,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib import auth
 from rest_framework.views import APIView
 from .serializers import *
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 
 
 def get_token(user)->dict:
@@ -21,6 +22,7 @@ def get_token(user)->dict:
         
     }# got both tokens
     
+#=========================================================================================================================================================================================================================
     
 class StudentRegistrationView(APIView):
     def get(self, request):
@@ -67,6 +69,9 @@ class StudentRegistrationView(APIView):
             
 # form here  i have to continue the work 
 
+
+#=========================================================================================================================================================================================================================
+
 class StudentLoginView(APIView):
     
     def post(self,request):
@@ -87,4 +92,71 @@ class StudentLoginView(APIView):
                     "error":"invalid credentials"
                 },status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+#=========================================================================================================================================================================================================================
+
+
+  
+class StudentProfileView(APIView):
+    # TODO: render classes are left to be add
+    permission_classes=[IsAuthenticated]
+    def get(self,request):
+        serializer=StudentProfileSerializer(request.user)
+        if serializer.is_valid():
+            
+            return Response(serializers.data,status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+#=========================================================================================================================================================================================================================
+class StudentChangePasswordView(APIView):
+    #TODO : here the render classes are needed to add
+    # renderer_classes=[Student_renderer]
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        serializer=StudentChangePasswordSerializer(data=request.data,context={
+            "user":request.user
+        })
+        
+        if serializer.is_valid(raise_exception=True):
+            return Response({
+                "msg":"password changed"
+            },status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
+        
+            
+
+
+#=========================================================================================================================================================================================================================
+class SendPasswordResetEmailStudentView(APIView):
+    # renderer_classes=[]
+    def post(self,request):
+        serializer=SendPasswordResetEmailStudentSerialzer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            return Response({
+                "msg":"Check your email You have received the reset password email"
+            },status=status.HTTP_200_OK
+                )
+        return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
+#=========================================================================================================================================================================================================================
+class StudentPasswordResetView(APIView):
+    # renderer_classes=[]
+    def post(self,request,uid,token):
+        ic(uid,token)
+        serializer=StudentPasswordResetSerializer(data=request.data,context={"sid":uid,"token":token})
+
+        if serializer.is_valid(raise_exception=True):
+            return Response(
+                {
+                    "msg":"password updated"
+                    
+                },status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+#=========================================================================================================================================================================================================================
+        
